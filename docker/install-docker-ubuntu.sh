@@ -30,3 +30,10 @@ sudo docker compose version
 ls -l /var/run/docker.sock /run/docker.sock
 
 echo "Docker installation completed successfully!"
+
+# Label this node as Docker-enabled in k3s
+NODE_NAME=$(hostname)
+if command -v kubectl >/dev/null 2>&1; then
+    sudo k3s kubectl label node "$NODE_NAME" docker=enabled --overwrite
+    echo "Node $NODE_NAME labelled docker=enabled"
+fi
