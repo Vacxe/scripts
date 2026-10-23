@@ -31,9 +31,12 @@ ls -l /var/run/docker.sock /run/docker.sock
 
 echo "Docker installation completed successfully!"
 
-# Label this node as Docker-enabled in k3s
+# Label the local node when a working k3s admin kubeconfig is available
 NODE_NAME=$(hostname)
-if command -v kubectl >/dev/null 2>&1; then
+if command -v k3s >/dev/null 2>&1 &&
+   [ -f /etc/rancher/k3s/k3s.yaml ]; then
     sudo k3s kubectl label node "$NODE_NAME" docker=enabled --overwrite
-    echo "Node $NODE_NAME labelled docker=enabled"
+else
+    echo "Docker installed. Label this node from the k3s control plane:"
+    echo "sudo k3s kubectl label node $NODE_NAME docker=enabled --overwrite"
 fi
